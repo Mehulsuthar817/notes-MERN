@@ -1,7 +1,7 @@
 import { useState } from "react";
 import api from "../api/axios";
 import { Link, Navigate } from "react-router-dom";
-import bgImage from "../assets/Gemini_Generated_Image_ar75pear75pear75.png";
+import bgImage from "../assets/bg-for-log.png";
 
 export default function Register() {
   const [name, setName] = useState("");

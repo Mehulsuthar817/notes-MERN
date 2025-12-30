@@ -1,41 +1,66 @@
-import { createContext,useContext, useEffect, useState } from "react";
-import { addNote } from "../api/notesAPI";
+import { createContext, useContext, useEffect, useState } from "react";
+import { getNotes, addNote as apiAddNote, updateNote, deleteNote as apiDeleteNote } from "../api/notesAPI";
+
 const NotesContext = createContext();
 
-export function NotesProvider({children}){
-    const [ notes,setNotes]= useState(()=> {
-        const savedNotes=localStorage.getItem("notes");
-        return savedNotes?JSON.parse(savedNotes):[];
-    });
+export function NotesProvider({ children }) {
+    const [notes, setNotes] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    useEffect(()=> {
-        localStorage.setItem("notes",JSON.stringify(notes));
-    },[notes]);
+    useEffect(() => {
+        fetchNotes();
+    }, []);
 
+    const fetchNotes = async () => {
+        try {
+            const res = await getNotes();
+            setNotes(res.data);
+        } catch (error) {
+            console.error("Error fetching notes:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-function addNote(note){
-    setNotes(prev=> [...prev,note])
-}
+    const addNoteToContext = async (content) => {
+        try {
+            const res = await apiAddNote(content);
+            const newNote = { ...res.data, id: res.data._id };
+            setNotes(prev => [newNote, ...prev]);
+        } catch (error) {
+            console.error("Error adding note:", error);
+        }
+    };
 
-function deleteNote(id){
-    setNotes(prev=> prev.filter(n=> n.id !== id));
-}
-function editNotes(id,newContent){
-    setNotes(prev=>
-        prev.map(n=> 
-            n.id==id
-            ?{...n,content:newContent,updatedAt: Date.now()}:
-            n
-        )
+    const deleteNoteFromContext = async (id) => {
+        try {
+            await apiDeleteNote(id);
+            setNotes(prev => prev.filter(n => n.id !== id));
+        } catch (error) {
+            console.error("Error deleting note:", error);
+        }
+    };
+
+    const editNoteInContext = async (id, newContent) => {
+        try {
+            await updateNote(id, newContent);
+            setNotes(prev =>
+                prev.map(n =>
+                    n.id === id
+                        ? { ...n, content: newContent, updatedAt: Date.now() }
+                        : n
+                )
+            );
+        } catch (error) {
+            console.error("Error updating note:", error);
+        }
+    };
+
+    return (
+        <NotesContext.Provider value={{ notes, loading, addNote: addNoteToContext, deleteNote: deleteNoteFromContext, editNote: editNoteInContext, fetchNotes }}>
+            {children}
+        </NotesContext.Provider>
     );
-}
-
-return(
-    <NotesContext.Provider value={{notes,addNote,deleteNote,editNotes}} >
-        {children}
-    </NotesContext.Provider>
-)
-
 }
 
 export function useNotes(){

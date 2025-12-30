@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
-import bgImage from "../assets/Gemini_Generated_Image_ar75pear75pear75.png";
+import bgImage from "../assets/bg-for-log.png";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -16,12 +16,23 @@ export default function Login() {
       navigate("/notes", { replace: true });
     }
   }, [isAuth]);
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    await login(email, password);
-    navigate("/notes");
-  };
+  try {
+    await login(email, password);   
+    navigate("/notes");             
+  } catch (error) {
+    const message =
+      error?.response?.data?.message ||
+      error?.message ||
+      "Login failed. Please try again.";
+
+    console.error("Login error:", message);
+    alert(message);                 
+    
+  }
+};
 
   return (
     <div className="login-container min-h-screen flex items-center justify-center" style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
