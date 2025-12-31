@@ -11,10 +11,11 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post("/auth/register", { email, password });
+      await api.post("/auth/register", { name, email, password });
       alert("Registered successfully");
     } catch (err) {
       alert(err.response?.data?.message || "Registration failed");
+      console.log("reg failed");
     }
   };
 

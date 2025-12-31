@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import bcrypt from "bcryptjs";
@@ -10,13 +11,13 @@ import Note from "./models/Note.js";
 import auth from "./middleware/auth.js";
 
 const app = express();
-const PORT = 5000;
-const JWT_SECRET = "supersecretkey";
+const PORT = process.env.PORT || 5000;
+const JWT_SECRET = process.env.JWT_SECRET;
 
-/* DB */
+
 connectDB();
 
-/* middleware */
+
 app.use(cors({
   origin: "http://localhost:5173",
   credentials: true,
