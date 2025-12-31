@@ -51,8 +51,8 @@ export function AuthProvider({ children }) {
       }}
     >
       <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-2xl shadow-2xl p-8 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-        <p className="text-white text-xl font-semibold">Loading...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+        <p className="text-black text-xl font-semibold">Loading...</p>
       </div>
     </div>
   );
