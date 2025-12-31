@@ -111,7 +111,7 @@ export default function Notes() {
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
+        backgroundAttachment: "scroll",
       }}
     >
       <div className="max-w-4xl mx-auto">
