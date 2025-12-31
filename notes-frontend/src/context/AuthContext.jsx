@@ -30,6 +30,7 @@ export function AuthProvider({ children }) {
     await api.post("/auth/login",{email,password});
     // After login, fetch user info to set userName
     const res = await api.get("/auth/me");
+    setIsAuth(false); // Reset to trigger notes refetch
     setIsAuth(true);
     setUserName(res.data.name);
   }

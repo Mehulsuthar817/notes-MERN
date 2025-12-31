@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getNotes, addNote as apiAddNote, updateNote, deleteNote as apiDeleteNote } from "../api/notesAPI";
+import { useAuth } from "./AuthContext";
 
 const NotesContext = createContext();
 
@@ -56,8 +57,12 @@ export function NotesProvider({ children }) {
         }
     };
 
+    const clearNotes = () => {
+        setNotes([]);
+    };
+
     return (
-        <NotesContext.Provider value={{ notes, loading, addNote: addNoteToContext, deleteNote: deleteNoteFromContext, editNote: editNoteInContext, fetchNotes }}>
+        <NotesContext.Provider value={{ notes, loading, addNote: addNoteToContext, deleteNote: deleteNoteFromContext, editNote: editNoteInContext, fetchNotes, clearNotes }}>
             {children}
         </NotesContext.Provider>
     );
