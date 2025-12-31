@@ -5,12 +5,9 @@ import { useAuth } from "./AuthContext";
 const NotesContext = createContext();
 
 export function NotesProvider({ children }) {
+    const { isAuth } = useAuth();
     const [notes, setNotes] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        fetchNotes();
-    }, []);
 
     const fetchNotes = async () => {
         try {
@@ -22,6 +19,15 @@ export function NotesProvider({ children }) {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (isAuth) {
+            fetchNotes();
+        } else {
+            setNotes([]);
+            setLoading(false);
+        }
+    }, [isAuth]);
 
     const addNoteToContext = async (content) => {
         try {
@@ -62,7 +68,7 @@ export function NotesProvider({ children }) {
     };
 
     return (
-        <NotesContext.Provider value={{ notes, loading, addNote: addNoteToContext, deleteNote: deleteNoteFromContext, editNote: editNoteInContext, fetchNotes, clearNotes }}>
+        <NotesContext.Provider value={{ notes, loading, addNote: addNoteToContext, deleteNote: deleteNoteFromContext, editNote: editNoteInContext, clearNotes }}>
             {children}
         </NotesContext.Provider>
     );
@@ -71,4 +77,3 @@ export function NotesProvider({ children }) {
 export function useNotes(){
     return useContext(NotesContext);
 }
-
